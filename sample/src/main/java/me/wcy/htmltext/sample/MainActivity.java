@@ -44,7 +44,8 @@ public class MainActivity extends AppCompatActivity {
                                 .asBitmap()
                                 .into(new SimpleTarget<Bitmap>() {
                                     @Override
-                                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                                    public void onResourceReady(Bitmap resource,
+                                                                GlideAnimation<? super Bitmap> glideAnimation) {
                                         callback.onLoadComplete(resource);
                                     }
 
@@ -78,12 +79,14 @@ public class MainActivity extends AppCompatActivity {
                 .setOnTagClickListener(new OnTagClickListener() {
                     @Override
                     public void onImageClick(List<String> imageUrlList, int position) {
-                        Toast.makeText(MainActivity.this, "image click, position: " + position + ", url: " + imageUrlList.get(position), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "image click, position: "
+                                + position + ", url: " + imageUrlList.get(position), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onLinkClick(String url) {
-                        Toast.makeText(MainActivity.this, "url click: " + url, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "url click: "
+                                + url, Toast.LENGTH_SHORT).show();
                     }
                 })
                 .into(textView);

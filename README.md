@@ -6,7 +6,7 @@ HtmlText 是一个 android.text.Html 的一个扩展，可以加载 HTML 并将�
 
 ## Screenshot
 
-![](https://raw.githubusercontent.com/wangchenyan/HtmlText/master/art/screenshot.gif)
+![](https://raw.githubusercontent.com/wangchenyan/HtmlText/master/art/screenshot.jpg)
 
 ## Supported HTML tags
 
@@ -58,7 +58,8 @@ HtmlText.from(example)
                         .asBitmap()
                         .into(new SimpleTarget<Bitmap>() {
                             @Override
-                            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                            public void onResourceReady(Bitmap resource,
+                                                        GlideAnimation<? super Bitmap> glideAnimation) {
                                 callback.onLoadComplete(resource);
                             }
 
@@ -92,12 +93,14 @@ HtmlText.from(example)
         .setOnTagClickListener(new OnTagClickListener() {
             @Override
             public void onImageClick(List<String> imageUrlList, int position) {
-                Toast.makeText(MainActivity.this, "image click, position: " + position + ", url: " + imageUrlList.get(position), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "image click, position: "
+                        + position + ", url: " + imageUrlList.get(position), Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onLinkClick(String url) {
-                Toast.makeText(MainActivity.this, "url click: " + url, Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "url click: "
+                        + url, Toast.LENGTH_SHORT).show();
             }
         })
         .into(textView);
