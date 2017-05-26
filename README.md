@@ -1,6 +1,6 @@
 # HtmlText
 
-HtmlText 是一个 android.text.Html 的一个扩展，可以加载 HTML 并将其转换成 Spannable 显示在 TextView 上，支持网络图片，图片加载器无绑定，支持图片和链接点击事件，扩展了更多标签。
+HtmlText 是 android.text.Html 的一个扩展，可以加载 HTML 并将其转换成 Spannable 显示在 TextView 上，支持网络图片，图片加载器无绑定，支持图片和链接点击事件，扩展了更多标签。
 
 该库体积微小，仅有8个类，不需要外部依赖。
 
@@ -35,75 +35,78 @@ HtmlText 是一个 android.text.Html 的一个扩展，可以加载 HTML 并将�
 
 ### Extended support by HtmlText
 
-- `<font size="..." color="...">`[android.text.Html do not support size]
 - `<ul>`
 - `<ol>`
 - `<li>`
 - `<code>`
 - `<center>`
 - `<strike>`
+- `<div>`[HTML contains two newline, there is one]
+- `<font size="..." color="...">`[extend support size]
+- `<img src="..." width="..." height="...">`[extend support width, height]
 
-## Example
+## Sample
 
 ```
 TextView textView = (TextView) findViewById(R.id.text);
 textView.setMovementMethod(LinkMovementMethod.getInstance());
-String example = "<h2>Hello wold</h2><img src=\"http://www.example.com/cat_pic.png\"/>";
-HtmlText.from(example)
-        .setImageLoader(new HtmlImageLoader() {
-            @Override
-            public void loadImage(String url, final Callback callback) {
-                Glide.with(MainActivity.this)
-                        .load(url)
-                        .asBitmap()
-                        .into(new SimpleTarget<Bitmap>() {
-                            @Override
-                            public void onResourceReady(Bitmap resource,
-                                                        GlideAnimation<? super Bitmap> glideAnimation) {
-                                callback.onLoadComplete(resource);
-                            }
+String sample = "<h2>Hello wold</h2>"
+                 + "<font size=\"5\" color=\"#FF0000\">Font size</font>"
+                 + "<img src=\"http://www.sample.com\"/>";
+HtmlText.from(sample)
+    .setImageLoader(new HtmlImageLoader() {
+        @Override
+        public void loadImage(String url, final Callback callback) {
+            // Glide sample, you can also use other image loader
+            Glide.with(MainActivity.this)
+                 .load(url)
+                 .asBitmap()
+                 .into(new SimpleTarget<Bitmap>() {
+                     @Override
+                     public void onResourceReady(Bitmap resource,
+                                                 GlideAnimation<? super Bitmap> glideAnimation) {
+                         callback.onLoadComplete(resource);
+                     }
 
-                            @Override
-                            public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                                callback.onLoadFailed();
-                            }
-                        });
-            }
+                     @Override
+                     public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                         callback.onLoadFailed();
+                     }
+                 });
+        }
 
-            @Override
-            public Drawable getDefaultDrawable() {
-                return ContextCompat.getDrawable(MainActivity.this, R.drawable.image_placeholder_loading);
-            }
+        @Override
+        public Drawable getDefaultDrawable() {
+            return ContextCompat.getDrawable(MainActivity.this, R.drawable.image_placeholder_loading);
+        }
 
-            @Override
-            public Drawable getErrorDrawable() {
-                return ContextCompat.getDrawable(MainActivity.this, R.drawable.image_placeholder_fail);
-            }
+        @Override
+        public Drawable getErrorDrawable() {
+            return ContextCompat.getDrawable(MainActivity.this, R.drawable.image_placeholder_fail);
+        }
 
-            @Override
-            public int getMaxWidth() {
-                return getTextWidth();
-            }
+        @Override
+        public int getMaxWidth() {
+            return getTextWidth();
+        }
 
-            @Override
-            public boolean fitWidth() {
-                return false;
-            }
-        })
-        .setOnTagClickListener(new OnTagClickListener() {
-            @Override
-            public void onImageClick(List<String> imageUrlList, int position) {
-                Toast.makeText(MainActivity.this, "image click, position: "
-                        + position + ", url: " + imageUrlList.get(position), Toast.LENGTH_SHORT).show();
-            }
+        @Override
+        public boolean fitWidth() {
+            return false;
+        }
+    })
+    .setOnTagClickListener(new OnTagClickListener() {
+        @Override
+        public void onImageClick(List<String> imageUrlList, int position) {
+            // image click
+        }
 
-            @Override
-            public void onLinkClick(String url) {
-                Toast.makeText(MainActivity.this, "url click: "
-                        + url, Toast.LENGTH_SHORT).show();
-            }
-        })
-        .into(textView);
+        @Override
+        public void onLinkClick(String url) {
+            // link click
+        }
+    })
+    .into(textView);
 ```
 
 ## Thanks
