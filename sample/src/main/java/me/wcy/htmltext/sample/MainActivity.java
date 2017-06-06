@@ -1,5 +1,6 @@
 package me.wcy.htmltext.sample;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -81,17 +82,17 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .setOnTagClickListener(new OnTagClickListener() {
                     @Override
-                    public void onImageClick(List<String> imageUrlList, int position) {
-                        Toast.makeText(MainActivity.this, "image click, position: " + position + ", url: " + imageUrlList.get(position), Toast.LENGTH_SHORT).show();
+                    public void onImageClick(Context context, List<String> imageUrlList, int position) {
+                        Toast.makeText(context, "image click, position: " + position + ", url: " + imageUrlList.get(position), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
-                    public void onLinkClick(String url) {
-                        Toast.makeText(MainActivity.this, "url click: " + url, Toast.LENGTH_SHORT).show();
+                    public void onLinkClick(Context context, String url) {
+                        Toast.makeText(context, "url click: " + url, Toast.LENGTH_SHORT).show();
                         try {
                             Intent intent = new Intent(Intent.ACTION_VIEW);
                             intent.setData(Uri.parse(url));
-                            startActivity(intent);
+                            context.startActivity(intent);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

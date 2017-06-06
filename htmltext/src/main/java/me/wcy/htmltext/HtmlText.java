@@ -99,7 +99,7 @@ public class HtmlText {
             int end = ssb.getSpanEnd(imageSpan);
             imageUrls.add(imageUrl);
 
-            ImageClickSpan imageClickSpan = new ImageClickSpan(imageUrls, i);
+            ImageClickSpan imageClickSpan = new ImageClickSpan(textView.getContext(), imageUrls, i);
             imageClickSpan.setListener(onTagClickListener);
             ClickableSpan[] clickableSpans = ssb.getSpans(start, end, ClickableSpan.class);
             if (clickableSpans != null) {
@@ -117,7 +117,7 @@ public class HtmlText {
                 int start = ssb.getSpanStart(urlSpan);
                 int end = ssb.getSpanEnd(urlSpan);
                 ssb.removeSpan(urlSpan);
-                LinkClickSpan linkClickSpan = new LinkClickSpan(urlSpan.getURL());
+                LinkClickSpan linkClickSpan = new LinkClickSpan(textView.getContext(), urlSpan.getURL());
                 linkClickSpan.setListener(onTagClickListener);
                 ssb.setSpan(linkClickSpan, start, end, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
             }
