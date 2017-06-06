@@ -31,7 +31,7 @@ HtmlText 是 android.text.Html 的一个扩展，可以加载 HTML 并将其转�
 - `<font color="..." face="...">`
 - `<h1>`, `<h2>`, `<h3>`, `<h4>`, `<h5>`, `<h6>`
 - `<a href="...">`
-- `<img src="...">`
+- `< img src="...">`
 
 ### Extended support by HtmlText
 
@@ -43,7 +43,7 @@ HtmlText 是 android.text.Html 的一个扩展，可以加载 HTML 并将其转�
 - `<strike>`
 - `<div>`[HTML contains two newline, there is one]
 - `<font size="..." color="...">`[extend support size]
-- `<img src="..." width="..." height="...">`[extend support width, height]
+- `< img src="..." width="..." height="...">`[extend support width, height]
 
 ## Sample
 
@@ -58,7 +58,7 @@ HtmlText.from(sample)
         @Override
         public void loadImage(String url, final Callback callback) {
             // Glide sample, you can also use other image loader
-            Glide.with(MainActivity.this)
+            Glide.with(context)
                  .load(url)
                  .asBitmap()
                  .into(new SimpleTarget<Bitmap>() {
@@ -77,12 +77,12 @@ HtmlText.from(sample)
 
         @Override
         public Drawable getDefaultDrawable() {
-            return ContextCompat.getDrawable(MainActivity.this, R.drawable.image_placeholder_loading);
+            return ContextCompat.getDrawable(context, R.drawable.image_placeholder_loading);
         }
 
         @Override
         public Drawable getErrorDrawable() {
-            return ContextCompat.getDrawable(MainActivity.this, R.drawable.image_placeholder_fail);
+            return ContextCompat.getDrawable(context, R.drawable.image_placeholder_fail);
         }
 
         @Override
@@ -97,17 +97,21 @@ HtmlText.from(sample)
     })
     .setOnTagClickListener(new OnTagClickListener() {
         @Override
-        public void onImageClick(List<String> imageUrlList, int position) {
+        public void onImageClick(Context context, List<String> imageUrlList, int position) {
             // image click
         }
 
         @Override
-        public void onLinkClick(String url) {
+        public void onLinkClick(Context context, String url) {
             // link click
         }
     })
     .into(textView);
 ```
+
+## Download
+
+Github: [HtmlText](https://github.com/wangchenyan/HtmlText)
 
 ## Thanks
 
