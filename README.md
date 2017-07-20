@@ -1,5 +1,7 @@
 # HtmlText
 
+[![](https://jitpack.io/v/wangchenyan/HtmlText.svg)](https://jitpack.io/#wangchenyan/HtmlText)
+
 HtmlText 是 android.text.Html 的一个扩展，可以加载 HTML 并将其转换成 Spannable 显示在 TextView 上，支持网络图片，图片加载器无绑定，支持图片和链接点击事件，扩展了更多标签。
 
 该库体积微小，仅有8个类，不需要外部依赖。
@@ -44,6 +46,31 @@ HtmlText 是 android.text.Html 的一个扩展，可以加载 HTML 并将其转�
 - `<div>`[HTML contains two newline, there is one]
 - `<font size="..." color="...">`[extend support size]
 - `< img src="..." width="..." height="...">`[extend support width, height]
+
+## Usage
+
+### Gradle
+
+**Step 1.** Add the JitPack repository to your build file
+
+Add it in your root build.gradle at the end of repositories:
+
+```
+allprojects {
+	repositories {
+		...
+		maven { url 'https://jitpack.io' }
+	}
+}
+```
+
+**Step 2.** Add the dependency
+
+```
+dependencies {
+    compile 'com.github.wangchenyan:HtmlText:1.0'
+}
+```
 
 ## Sample
 
@@ -108,10 +135,6 @@ HtmlText.from(sample)
     })
     .into(textView);
 ```
-
-## Download
-
-Github: [HtmlText](https://github.com/wangchenyan/HtmlText)
 
 ## Thanks
 
