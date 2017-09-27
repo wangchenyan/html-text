@@ -47,6 +47,8 @@ HtmlText 是 android.text.Html 的一个扩展，可以加载 HTML 并将其转�
 - `<font size="..." color="...">`[extend support size]
 - `< img src="..." width="..." height="...">`[extend support width, height]
 
+这些是我在项目中所用到的标签，如果你需要支持更多标签，请在[Issues](https://github.com/wangchenyan/HtmlText/issues)中告诉我。
+
 ## Usage
 
 ### Gradle
