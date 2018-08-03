@@ -1,6 +1,6 @@
 # html-text
 
-[![](https://jitpack.io/v/wangchenyan/HtmlText.svg)](https://jitpack.io/#wangchenyan/HtmlText)
+[![](https://jitpack.io/v/wangchenyan/html-text.svg)](https://jitpack.io/#wangchenyan/html-text)
 
 html-text 是 android.text.Html 的一个扩展，可以加载 HTML 并将其转换成 Spannable 显示在 TextView 上，支持网络图片，图片加载器无绑定，支持图片和链接点击事件，扩展了更多标签。
 
@@ -8,7 +8,7 @@ html-text 是 android.text.Html 的一个扩展，可以加载 HTML 并将其转
 
 ## Screenshot
 
-![](https://raw.githubusercontent.com/wangchenyan/HtmlText/master/art/screenshot.jpg)
+![](https://raw.githubusercontent.com/wangchenyan/html-text/master/art/screenshot.jpg)
 
 ## Supported HTML tags
 
@@ -47,7 +47,7 @@ html-text 是 android.text.Html 的一个扩展，可以加载 HTML 并将其转
 - `<font size="..." color="...">`[extend support size]
 - `< img src="..." width="..." height="...">`[extend support width, height]
 
-这些是我在项目中所用到的标签，如果你需要支持更多标签，请在[Issues](https://github.com/wangchenyan/HtmlText/issues)中告诉我。
+这些是我在项目中所用到的标签，如果你需要支持更多标签，请在[Issues](https://github.com/wangchenyan/html-text/issues)中告诉我。
 
 ## Usage
 
