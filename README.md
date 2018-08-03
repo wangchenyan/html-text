@@ -35,7 +35,7 @@ html-text 是 android.text.Html 的一个扩展，可以加载 HTML 并将其转
 - `<a href="...">`
 - `< img src="...">`
 
-### Extended support by HtmlText
+### Extended support by html-text
 
 - `<ul>`
 - `<ol>`
