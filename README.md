@@ -70,7 +70,7 @@ allprojects {
 
 ```
 dependencies {
-    compile 'com.github.wangchenyan:HtmlText:1.0'
+    implementation 'com.github.wangchenyan:html-text:1.0'
 }
 ```
 
