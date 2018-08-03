@@ -1,4 +1,4 @@
-# HtmlText
+# html-text
 
 [![](https://jitpack.io/v/wangchenyan/HtmlText.svg)](https://jitpack.io/#wangchenyan/HtmlText)
 
