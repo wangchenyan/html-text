@@ -35,6 +35,8 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.LeadingMarginSpan;
 import android.text.style.StrikethroughSpan;
 import android.text.style.TypefaceSpan;
+import android.text.style.UnderlineSpan;
+import android.util.Log;
 import android.widget.TextView;
 
 import org.xml.sax.XMLReader;
@@ -249,11 +251,15 @@ class HtmlTagHandler implements Html.TagHandler {
         public String background_color;
         public String color;
         public String size;
+        public String text_decoration;
+        public String text_align;
 
-        public Font(String background_color, String color, String size) {
+        public Font(String background_color, String color, String size, String text_decoration, String text_align) {
             this.background_color = background_color;
             this.color = color;
             this.size = size;
+            this.text_decoration = text_decoration;
+            this.text_align = text_align;
         }
     }
 
@@ -295,15 +301,16 @@ class HtmlTagHandler implements Html.TagHandler {
         Map<String, String> attributes = getAttributes(xmlReader);
         String background_color = attributes.get("background-color");
         String color = attributes.get("color");
-        String size = attributes.get("size");
-        output.setSpan(new Font(background_color, color, size), len, len, Spannable.SPAN_MARK_MARK);
+        String size = attributes.get("font-size");
+        String text_decoration = attributes.get("text-decoration");
+        String text_align = attributes.get("text-align");
+        output.setSpan(new Font(background_color, color, size, text_decoration, text_align), len, len, Spannable.SPAN_MARK_MARK);
     }
 
     private void endFont(Editable output) {
         int len = output.length();
         Object obj = getLast(output, Font.class);
         int where = output.getSpanStart(obj);
-
         output.removeSpan(obj);
 
         if (where != len) {
@@ -311,7 +318,8 @@ class HtmlTagHandler implements Html.TagHandler {
             int background_color = parseColor(f.background_color);
             int color = parseColor(f.color);
             int size = parseSize(f.size);
-
+            String text_decoration = f.text_decoration;
+            String text_align = f.text_align;
             if (background_color != -1) {
                 output.setSpan(new BackgroundColorSpan(background_color | 0xFF000000), where, len, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
@@ -319,7 +327,14 @@ class HtmlTagHandler implements Html.TagHandler {
                 output.setSpan(new ForegroundColorSpan(color | 0xFF000000), where, len, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
             if (size > 0) {
+                Log.d("font-size", new AbsoluteSizeSpan(size, true).getSize() + "");
                 output.setSpan(new AbsoluteSizeSpan(size, true), where, len, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+            if ("underline".equals(text_decoration)) {
+                output.setSpan(new UnderlineSpan(), where, len, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+            if ("line-through".equals(text_decoration)) {
+                output.setSpan(new StrikethroughSpan(), where, len, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
         }
     }
@@ -358,13 +373,14 @@ class HtmlTagHandler implements Html.TagHandler {
              * The data index is "just" where the keys and values are stored.
              */
             for (int i = 0; i < len; i++) {
-                if ("style".equals(data[i * 5 + 1])) {
+                if ("style".equals(data[i * 5 + 1]) || "data-mce-style".equals(data[i * 5 + 1])) {
                     String[] styleAttrs = data[i * 5 + 4].split(";");
                     int styleLen = styleAttrs.length;
                     for (int j = 0; j < styleLen; j++) {
                         String[] styleAttr = styleAttrs[j].split(":");
                         attributes.put(styleAttr[0].trim(), styleAttr[1].trim());
                     }
+                    continue;
                 }
                 attributes.put(data[i * 5 + 1], data[i * 5 + 4]);
             }
@@ -391,8 +407,15 @@ class HtmlTagHandler implements Html.TagHandler {
     }
 
     private static int parseColor(String colorString) {
+        String hexColorString = "#";
         try {
-            return Color.parseColor(colorString);
+            if (colorString.contains("rgb")) {
+                String[] rgb = colorString.replace("rgb(", "").replace(")", "").split(",");
+                for (int i = 0; i < 3; i++) {
+                    hexColorString += Integer.toHexString(Integer.parseInt(rgb[i].trim()));
+                }
+            }
+            return Color.parseColor(hexColorString);
         } catch (Exception ignored) {
             return -1;
         }
@@ -402,13 +425,20 @@ class HtmlTagHandler implements Html.TagHandler {
      * dpValue
      */
     private int parseSize(String size) {
+        if (size != null) {
+            size = size.replace("px", "").replace("pt", "");
+        }
         int s;
         try {
             s = Integer.parseInt(size);
         } catch (NumberFormatException ignored) {
             return 0;
         }
-
+        if (s == 36) {
+            s = 6;
+        } else {
+            s = 1;
+        }
         s = Math.max(s, 1);
         s = Math.min(s, 7);
 

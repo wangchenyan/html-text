@@ -39,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
         textView = (TextView) findViewById(R.id.text);
         textView.setMovementMethod(LinkMovementMethod.getInstance());
         String sample = getSample();
-        Log.d("debug",sample);
         HtmlText.from(sample)
                 .setImageLoader(new HtmlImageLoader() {
                     @Override
