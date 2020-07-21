@@ -29,6 +29,7 @@ import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.AlignmentSpan;
+import android.text.style.BackgroundColorSpan;
 import android.text.style.BulletSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.LeadingMarginSpan;
@@ -56,6 +57,7 @@ class HtmlTagHandler implements Html.TagHandler {
     private static final String LIST_ITEM = "HTML_TEXT_TAG_LI";
     private static final String FONT = "HTML_TEXT_TAG_FONT";
     private static final String DIV = "HTML_TEXT_TAG_DIV";
+    private static final String SPAN = "HTML_TEXT_TAG_SPAN";
 
     private Context mContext;
     private TextPaint mTextPaint;
@@ -108,6 +110,8 @@ class HtmlTagHandler implements Html.TagHandler {
         html = html.replace("</font>", "</" + FONT + ">");
         html = html.replace("<div", "<" + DIV);
         html = html.replace("</div>", "</" + DIV + ">");
+        html = html.replace("<span", "<" + SPAN);
+        html = html.replace("</span>", "</" + SPAN + ">");
 
         return html;
     }
@@ -135,6 +139,8 @@ class HtmlTagHandler implements Html.TagHandler {
                     }
                 }
             } else if (tag.equalsIgnoreCase(FONT)) {
+                startFont(output, xmlReader);
+            } else if (tag.equalsIgnoreCase(SPAN)) {
                 startFont(output, xmlReader);
             } else if (tag.equalsIgnoreCase(DIV)) {
                 handleDiv(output);
@@ -195,6 +201,8 @@ class HtmlTagHandler implements Html.TagHandler {
                 }
             } else if (tag.equalsIgnoreCase(FONT)) {
                 endFont(output);
+            } else if (tag.equalsIgnoreCase(SPAN)) {
+                endFont(output);
             } else if (tag.equalsIgnoreCase(DIV)) {
                 handleDiv(output);
             } else if (tag.equalsIgnoreCase("code")) {
@@ -238,10 +246,12 @@ class HtmlTagHandler implements Html.TagHandler {
     }
 
     private static class Font {
+        public String background_color;
         public String color;
         public String size;
 
-        public Font(String color, String size) {
+        public Font(String background_color, String color, String size) {
+            this.background_color = background_color;
             this.color = color;
             this.size = size;
         }
@@ -283,9 +293,10 @@ class HtmlTagHandler implements Html.TagHandler {
     private void startFont(Editable output, XMLReader xmlReader) {
         int len = output.length();
         Map<String, String> attributes = getAttributes(xmlReader);
+        String background_color = attributes.get("background-color");
         String color = attributes.get("color");
         String size = attributes.get("size");
-        output.setSpan(new Font(color, size), len, len, Spannable.SPAN_MARK_MARK);
+        output.setSpan(new Font(background_color, color, size), len, len, Spannable.SPAN_MARK_MARK);
     }
 
     private void endFont(Editable output) {
@@ -297,9 +308,13 @@ class HtmlTagHandler implements Html.TagHandler {
 
         if (where != len) {
             Font f = (Font) obj;
+            int background_color = parseColor(f.background_color);
             int color = parseColor(f.color);
             int size = parseSize(f.size);
 
+            if (background_color != -1) {
+                output.setSpan(new BackgroundColorSpan(background_color | 0xFF000000), where, len, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
             if (color != -1) {
                 output.setSpan(new ForegroundColorSpan(color | 0xFF000000), where, len, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
@@ -342,8 +357,17 @@ class HtmlTagHandler implements Html.TagHandler {
              * This is as tight as things can get :)
              * The data index is "just" where the keys and values are stored.
              */
-            for (int i = 0; i < len; i++)
+            for (int i = 0; i < len; i++) {
+                if ("style".equals(data[i * 5 + 1])) {
+                    String[] styleAttrs = data[i * 5 + 4].split(";");
+                    int styleLen = styleAttrs.length;
+                    for (int j = 0; j < styleLen; j++) {
+                        String[] styleAttr = styleAttrs[j].split(":");
+                        attributes.put(styleAttr[0].trim(), styleAttr[1].trim());
+                    }
+                }
                 attributes.put(data[i * 5 + 1], data[i * 5 + 4]);
+            }
         } catch (Exception ignored) {
         }
         return attributes;

@@ -10,6 +10,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.LinkMovementMethod;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         textView = (TextView) findViewById(R.id.text);
         textView.setMovementMethod(LinkMovementMethod.getInstance());
         String sample = getSample();
+        Log.d("debug",sample);
         HtmlText.from(sample)
                 .setImageLoader(new HtmlImageLoader() {
                     @Override
