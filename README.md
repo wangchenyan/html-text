@@ -1,6 +1,6 @@
 # html-text
 
-[![](https://jitpack.io/v/wangchenyan/html-text.svg)](https://jitpack.io/#wangchenyan/html-text)
+[![](https://jitpack.io/v/SilverIceKey/html-text.svg)](https://jitpack.io/#SilverIceKey/html-text)
 
 html-text 是 android.text.Html 的一个扩展，可以加载 HTML 并将其转换成 Spannable 显示在 TextView 上，支持网络图片，图片加载器无绑定，支持图片和链接点击事件，扩展了更多标签。
 
