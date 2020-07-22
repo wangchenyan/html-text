@@ -121,6 +121,8 @@ class HtmlTagHandler implements Html.TagHandler {
         html = html.replace("</div>", "</" + DIV + ">");
         html = html.replace("<span", "<" + SPAN);
         html = html.replace("</span>", "</" + SPAN + ">");
+        html = html.replace("<p", "<" + P);
+        html = html.replace("</p>", "</" + P + ">");
 
         return html;
     }
@@ -150,6 +152,9 @@ class HtmlTagHandler implements Html.TagHandler {
             } else if (tag.equalsIgnoreCase(FONT)) {
                 startFont(output, xmlReader);
             } else if (tag.equalsIgnoreCase(SPAN)) {
+                startFont(output, xmlReader);
+            } else if (tag.equalsIgnoreCase(P)) {
+                handleDiv(output);
                 startFont(output, xmlReader);
             } else if (tag.equalsIgnoreCase(DIV)) {
                 handleDiv(output);
@@ -212,6 +217,9 @@ class HtmlTagHandler implements Html.TagHandler {
                 endFont(output);
             } else if (tag.equalsIgnoreCase(SPAN)) {
                 endSpan(output);
+            } else if (tag.equalsIgnoreCase(P)) {
+                handleDiv(output);
+                endP(output);
             } else if (tag.equalsIgnoreCase(DIV)) {
                 handleDiv(output);
             } else if (tag.equalsIgnoreCase("code")) {
@@ -332,7 +340,6 @@ class HtmlTagHandler implements Html.TagHandler {
             int color = parseColor(f.color);
             int size = parseSize(f.size);
             String text_decoration = f.text_decoration;
-            String text_align = f.text_align;
             if (background_color != -1) {
                 output.setSpan(new BackgroundColorSpan(background_color | 0xFF000000), where, len, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
@@ -352,7 +359,15 @@ class HtmlTagHandler implements Html.TagHandler {
         }
     }
 
+    private void endP(Editable output) {
+        endSpan(output, true);
+    }
+
     private void endSpan(Editable output) {
+        endSpan(output, false);
+    }
+
+    private void endSpan(Editable output, boolean isP) {
         int len = output.length();
         Object obj = getLast(output, Font.class);
         int where = output.getSpanStart(obj);
@@ -360,6 +375,9 @@ class HtmlTagHandler implements Html.TagHandler {
 
         if (where != len) {
             Font f = (Font) obj;
+            if (isP && f.text_align == null) {
+                f.text_align = "left";
+            }
             f.where = where;
             f.len = len;
             SpanFontNextIndex.push(f);
@@ -391,6 +409,15 @@ class HtmlTagHandler implements Html.TagHandler {
             }
             if ("line-through".equals(text_decoration)) {
                 output.setSpan(new StrikethroughSpan(), where, len, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+            if ("left".equals(text_align)) {
+                output.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_NORMAL), where, len, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+            if ("center".equals(text_align)) {
+                output.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER), where, len, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+            if ("right".equals(text_align)) {
+                output.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_OPPOSITE), where, len, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
         }
     }
@@ -470,7 +497,7 @@ class HtmlTagHandler implements Html.TagHandler {
                 for (int i = 0; i < 3; i++) {
                     hexColorString += Integer.toHexString(Integer.parseInt(rgb[i].trim()));
                 }
-            }else {
+            } else {
                 hexColorString = colorString;
             }
             return Color.parseColor(hexColorString);
@@ -492,17 +519,8 @@ class HtmlTagHandler implements Html.TagHandler {
         } catch (NumberFormatException ignored) {
             return 0;
         }
-//        if (s == 36) {
-//            s = 6;
-//        } else {
-//            s = 1;
-//        }
-//        s = Math.max(s, 1);
-//        s = Math.min(s, 7);
 
-        int baseSize = px2dp(mTextPaint.getTextSize());
-
-        return (s - 3) + baseSize;
+        return px2dp(s);
     }
 
     private int px2dp(float pxValue) {
